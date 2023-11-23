@@ -1,0 +1,13 @@
+{
+    "google_token_api": "https://www.googleapis.com/oauth2/v1/tokeninfo",
+    "google_client_id": "53714269438-hp814n0adhnsps5ge7u81g5lssek6h9m.apps.googleusercontent.com",
+    "google_client_secret": "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",
+    "base_url": "http://127.0.0.1:8000/",
+    "kakao_client_id": "510fbb712daffaec9d6c9c0f7524e008",
+    "kakao_client_secret": "990633",
+    "kakao_token_api": "https://kapi.kakao.com/v2/user/me",
+    "naver_client_id": "IxoDXd61MLLXilnc4isn",
+    "naver_client_secret": "cOI0sLIbAF",
+    "naver_token_api": "https://openapi.naver.com/v1/nid/me",
+    "secret_key": "django-insecure-x)#a)#ofrum^4fih*t(^!r26%gf8ott$4^1e4ot+ebkz3wlfz5"
+}
