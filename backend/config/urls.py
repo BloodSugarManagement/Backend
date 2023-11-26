@@ -19,6 +19,8 @@ from django.urls import path
 from django.urls import include
 from drf_spectacular.views import SpectacularRedocView
 from drf_spectacular.views import SpectacularSwaggerView
+from drf_spectacular.views import SpectacularJSONAPIView
+from drf_spectacular.views import SpectacularYAMLAPIView
 
 
 urlpatterns = [
@@ -33,6 +35,8 @@ user = [
 ]
 
 docs = [
+    path("docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
+    path("docs/yaml/", SpectacularYAMLAPIView.as_view(), name="swagger-yaml"),
     path("docs/swagger/", SpectacularSwaggerView.as_view(url_name="schema-json"), name="swagger-ui"),
     path("docs/redoc/", SpectacularRedocView.as_view(url_name="schema-json"), name="redoc"),
 ]
