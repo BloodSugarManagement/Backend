@@ -46,7 +46,8 @@ class BaseManagementView(RetrieveUpdateDestroyAPIView):
         date_fields = ["year", "month", "day"]
 
         year = self.kwargs.get("year")  # note: 최적화 필요
-        self.kwargs["year"] = int(year_standard_format(year))
+        if year:
+            self.kwargs["year"] = int(year_standard_format(year))
 
         date_format = [self.kwargs.get(i) for i in date_fields]
 
