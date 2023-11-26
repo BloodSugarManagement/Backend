@@ -31,11 +31,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"password": "비밀번호가 일치하지 않습니다."})
         return data
 
-    def create(self, validated_data):
-        user = get_user_model().objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
+    def save(self, request):
+        user = CustomUser(
+            email=self.validated_data["email"],
+            age_range=self.validated_data["age_range"],
         )
+
+        password = self.validated_data["password"]
+        password2 = self.validated_data["password2"]
+
+        if password != password2:
+            raise serializers.ValidationError({"password": "비밀번호가 일치하지 않습니다."})
+        user.set_password(password)
+        user.save()
         return user
 
 

@@ -102,6 +102,7 @@ REST_AUTH = {
     "REGISTER_SERIALIZER": "accounts.serializers.UserRegistrationSerializer",
 }
 
+
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
@@ -177,6 +178,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 REST_USE_JWT = True
 CORS_ALLOW_ALL_ORIGINS = True
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),

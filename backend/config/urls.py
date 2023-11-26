@@ -17,10 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
-from drf_spectacular.views import SpectacularJSONAPIView
 from drf_spectacular.views import SpectacularRedocView
 from drf_spectacular.views import SpectacularSwaggerView
-from drf_spectacular.views import SpectacularYAMLAPIView
 
 
 urlpatterns = [
@@ -29,13 +27,12 @@ urlpatterns = [
 
 user = [
     path('accounts/', include('dj_rest_auth.urls')),
+    path("accounts/register/", include("dj_rest_auth.registration.urls")),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('accounts.urls')),
 ]
 
 docs = [
-    path("docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
-    path("docs/yaml/", SpectacularYAMLAPIView.as_view(), name="swagger-yaml"),
     path("docs/swagger/", SpectacularSwaggerView.as_view(url_name="schema-json"), name="swagger-ui"),
     path("docs/redoc/", SpectacularRedocView.as_view(url_name="schema-json"), name="redoc"),
 ]
