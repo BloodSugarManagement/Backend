@@ -7,7 +7,7 @@ class BloodSugarSerializer(serializers.ModelSerializer):
         model = BloodSugarManager
         fields = [
             "is_empty_stomach_warning", "is_morning_warning", "is_lunch_warning", "is_evening_warning",
-            "empty_stomach", "morning", "lunch", "evening", "feedback",
+            "empty_stomach", "morning", "lunch", "evening",
         ]
 
 
