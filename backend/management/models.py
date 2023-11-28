@@ -24,19 +24,19 @@ class BloodSugarManager(models.Model):
 
     @property
     def is_empty_stomach_warning(self):
-        return self.empty_stomach > 100
+        return not (0 == self.empty_stomach or 70 <= self.empty_stomach <= 100)
 
     @property
     def is_morning_warning(self):
-        return self.morning > 140
+        return not (0 == self.morning or 90 <= self.morning <= 140)
 
     @property
     def is_lunch_warning(self):
-        return self.lunch > 140
+        return not (0 == self.lunch or 90 <= self.lunch <= 140)
 
     @property
     def is_evening_warning(self):
-        return self.evening > 140
+        return not (0 == self.evening or 90 <= self.evening <= 140)
 
     class Meta:
         verbose_name = "혈당 관리"
