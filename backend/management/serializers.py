@@ -6,8 +6,10 @@ class BloodSugarSerializer(serializers.ModelSerializer):
     class Meta:
         model = BloodSugarManager
         fields = [
-            "is_empty_stomach_warning", "is_morning_warning", "is_lunch_warning", "is_evening_warning",
-            "empty_stomach", "morning", "lunch", "evening",
+            "is_empty_stomach_warning", "is_before_morning_warning", "is_after_morning_warning",
+            "is_before_lunch_warning", "is_after_lunch_warning", "is_before_evening_warning",
+            "is_after_evening_warning", "empty_stomach", "before_morning", "after_morning",
+            "before_lunch", "after_lunch", "before_evening", "after_evening",
         ]
 
 
@@ -21,5 +23,7 @@ class BloodSugarAggregateSerializer(serializers.ModelSerializer):
     class Meta:
         model = BloodSugarManager
         fields = [
-            "empty_stomach", "morning", "lunch", "evening", "created_at",
+            "empty_stomach", "before_morning", "after_morning",
+            "before_lunch", "after_lunch", "before_evening", "after_evening",
+            "created_at",
         ]
