@@ -109,9 +109,12 @@
 ```
 {
     "empty_stomach": 0,
-    "morning": 0,
-    "lunch": 0,
-    "evening": 0,
+    "before_morning": 0,
+    "after_morning": 0,
+    "before_lunch": 0,
+    "after_lunch": 0,
+    "before_evening": 0,
+    "after_evening": 0,
 }
 ```
 
@@ -152,9 +155,12 @@
 ```
 {
     "empty_stomach": 0,
-    "morning": 0,
-    "lunch": 0,
-    "evening": 0,
+    "before_morning": 0,
+    "after_morning": 0,
+    "before_lunch": 0,
+    "after_lunch": 0,
+    "before_evening": 0,
+    "after_evening": 0,
 }
 ```
 |method|url endpoint|help text|
