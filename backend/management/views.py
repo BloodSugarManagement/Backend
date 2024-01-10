@@ -18,7 +18,10 @@ class BaseManagementView(RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         request_data = request.data.copy()
         request_data["manager"] = request.user.id
-        request_data["created_at"] = timezone.now().date()
+        request_data["created_at"] = request_data.get("created_at")
+
+        if not request_data["created_at"]:
+            return Response({"message": "날짜를 입력 하세요."}, status=status.HTTP_400_BAD_REQUEST)
 
         instance = self.get_object()
 
