@@ -1,5 +1,6 @@
 import requests
-from typing import Dict, Any
+import os
+from typing import Dict, Any, Optional
 
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth import get_user_model
@@ -12,17 +13,30 @@ from rest_framework.request import Request
 
 from . import services
 from .models import CustomUser
-from config import settings
 
 
 class BaseSocialLoginView(APIView):
     permission_classes = (AllowAny,)
     user: CustomUser = get_user_model()
+    client_id: str = None
+    client_secret: str = None
+    callback_uri: str = None
+    state: Optional[str] = None
+    platform: str = None
+
+    @property
+    def auth(self):
+        auth_fields = ["client_id", "client_secret", "callback_uri", "state"]
+        return {
+            "platform": self.platform,
+            "auth": {auth_field:  getattr(self, auth_field) for auth_field in auth_fields if getattr(self, auth_field)}
+        }
 
     @csrf_exempt  # note : if postman testing needs csrftoken
     def post(self, request: Request):
-        access_token: str = request.data.get("access_token")
-        user_profile_request: Response = self.request_user_profile(access_token)
+        print(f"auth: {self.auth}")
+        access_token: str = services.request_access_token_by_auth_code(request, self.auth)
+        user_profile_request: Request = self.request_user_profile(access_token)
         print(f"request: {user_profile_request}")
         user_profile_response: Dict[str, Any] = services.access_token_is_valid(user_profile_request)
         print(f"response: {user_profile_response}")
@@ -61,7 +75,10 @@ class BaseSocialLoginView(APIView):
 
 class GoogleLogin(BaseSocialLoginView):
     platform = "google"
-    token_url = getattr(settings, "google_token_api")
+    token_url = os.environ.get("GOOGLE_TOKEN_API")
+    client_id = os.environ.get("GOOGLE_CLIENT_ID")
+    client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
+    callback_uri = os.environ.get("GOOGLE_CALLBACK_URI")
 
     def post(self, request: Request):
         return super().post(request)
@@ -79,7 +96,9 @@ class GoogleLogin(BaseSocialLoginView):
 
 class KakaoLogin(BaseSocialLoginView):
     platform = "kakao"
-    token_url = getattr(settings, "kakao_token_api")
+    token_url = os.environ.get("KAKAO_TOKEN_API")
+    client_id = os.environ.get("KAKAO_CLIENT_ID")
+    callback_uri = os.environ.get("KAKAO_CALLBACK_URI")
 
     def post(self, request):
         return super().post(request)
@@ -97,7 +116,10 @@ class KakaoLogin(BaseSocialLoginView):
 
 class NaverLogin(BaseSocialLoginView):
     platform = "naver"
-    token_url = getattr(settings, "naver_token_api")
+    token_url = os.environ.get("NAVER_TOKEN_API")
+    client_id = os.environ.get("NAVER_CLIENT_ID")
+    client_secret = os.environ.get("NAVER_CLIENT_SECRET")
+    callback_uri = os.environ.get("NAVER_CALLBACK_URI")
 
     def post(self, request):
         return super().post(request)

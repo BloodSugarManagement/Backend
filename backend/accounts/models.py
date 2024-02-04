@@ -1,9 +1,20 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 class CustomUserManager(BaseUserManager):
+    @staticmethod
+    def email_validator(email):
+        try:
+            validate_email(email)
+            return True
+        except ValidationError:
+            raise ValueError(_("You must provide a valid email address."))
+
     def create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError(_("The Email must be set"))
@@ -19,13 +30,29 @@ class CustomUserManager(BaseUserManager):
         """
         extra_fields.setdefault("is_admin", True)
         extra_fields.setdefault("is_active", True)
+        extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_admin") is not True:
             raise ValueError(_("Superuser must have is_staff=True."))
-        return self.create_user(email, password, **extra_fields)
+
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError(_("Superuser must have is_superuser=True."))
+
+        if not password:
+            raise ValueError(_("Superuser must have a password."))
+
+        if email:
+            email = self.normalize_email(email)
+            self.email_validator(email)
+        else:
+            raise ValueError(_("Superuser must have an email address."))
+
+        user = self.create_user(email, password, **extra_fields)
+        user.save(using=self._db)
+        return user
 
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         default="",
         max_length=255,
@@ -47,7 +74,7 @@ class CustomUser(AbstractBaseUser):
         default="선택",
         verbose_name="연령대"
         )
-    date_joined = models.DateTimeField(auto_now_add=True, verbose_name="가입 일시")
+    date_joined = models.DateTimeField(default=timezone.now, verbose_name="가입 일시")
     last_login = models.DateTimeField(auto_now=True, verbose_name="최종 로그인 일시")
 
     is_active = models.BooleanField(default=True, verbose_name="활성화 여부")
@@ -58,8 +85,8 @@ class CustomUser(AbstractBaseUser):
     objects = CustomUserManager()
 
     class Meta:
-        verbose_name = "유저"
-        verbose_name_plural = "유저"
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
 
     def __str__(self):
         return self.email

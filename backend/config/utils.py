@@ -3,7 +3,7 @@ from typing import Dict
 from django.utils import timezone
 
 
-def Initialize_env_variables(json_file: json, module_name: str):
+def initialize_env_variables(json_file: json, module_name: str):
     with open(json_file, "r") as f:
         config: Dict = json.load(f)
 
