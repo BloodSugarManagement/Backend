@@ -1,5 +1,4 @@
 import requests
-import os
 from typing import Dict, Any, Optional
 
 from allauth.socialaccount.models import SocialAccount
@@ -11,6 +10,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.request import Request
 
+from config.settings.base import SOCIAL
 from . import services
 from .models import CustomUser
 
@@ -23,6 +23,7 @@ class BaseSocialLoginView(APIView):
     callback_uri: str = None
     state: Optional[str] = None
     platform: str = None
+    auth = None
 
     @property
     def auth(self):
@@ -33,7 +34,7 @@ class BaseSocialLoginView(APIView):
         }
 
     @csrf_exempt  # note : if postman testing needs csrftoken
-    def post(self, request: Request):
+    def get(self, request: Request):
         print(f"auth: {self.auth}")
         access_token: str = services.request_access_token_by_auth_code(request, self.auth)
         user_profile_request: Request = self.request_user_profile(access_token)
@@ -75,10 +76,10 @@ class BaseSocialLoginView(APIView):
 
 class GoogleLogin(BaseSocialLoginView):
     platform = "google"
-    token_url = os.environ.get("GOOGLE_TOKEN_API")
-    client_id = os.environ.get("GOOGLE_CLIENT_ID")
-    client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
-    callback_uri = os.environ.get("GOOGLE_CALLBACK_URI")
+    token_url = SOCIAL.get("GOOGLE_TOKEN_API")
+    client_id = SOCIAL.get("GOOGLE_CLIENT_ID")
+    client_secret = SOCIAL.get("GOOGLE_CLIENT_SECRET")
+    callback_uri = SOCIAL.get("GOOGLE_CALLBACK_URI")
 
     def post(self, request: Request):
         return super().post(request)
@@ -96,12 +97,9 @@ class GoogleLogin(BaseSocialLoginView):
 
 class KakaoLogin(BaseSocialLoginView):
     platform = "kakao"
-    token_url = os.environ.get("KAKAO_TOKEN_API")
-    client_id = os.environ.get("KAKAO_CLIENT_ID")
-    callback_uri = os.environ.get("KAKAO_CALLBACK_URI")
-
-    def post(self, request):
-        return super().post(request)
+    token_url = SOCIAL.get("KAKAO_TOKEN_API")
+    client_id = SOCIAL.get("KAKAO_CLIENT_ID")
+    callback_uri = SOCIAL.get("KAKAO_CALLBACK_URI")
 
     def request_user_profile(self, access_token):
         headers = {"Authorization": f"Bearer {access_token}"}
@@ -116,10 +114,10 @@ class KakaoLogin(BaseSocialLoginView):
 
 class NaverLogin(BaseSocialLoginView):
     platform = "naver"
-    token_url = os.environ.get("NAVER_TOKEN_API")
-    client_id = os.environ.get("NAVER_CLIENT_ID")
-    client_secret = os.environ.get("NAVER_CLIENT_SECRET")
-    callback_uri = os.environ.get("NAVER_CALLBACK_URI")
+    token_url = SOCIAL.get("NAVER_TOKEN_API")
+    client_id = SOCIAL.get("NAVER_CLIENT_ID")
+    client_secret = SOCIAL.get("NAVER_CLIENT_SECRET")
+    callback_uri = SOCIAL.get("NAVER_CALLBACK_URI")
 
     def post(self, request):
         return super().post(request)

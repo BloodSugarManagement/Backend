@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 import environ
+import json
 
 env = environ.Env()
 environ.Env.read_env(".env")
@@ -22,6 +23,9 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
+secret = Path(ROOT_DIR, "config", "settings", ".secrets.json")
+with open(secret, "r") as f:
+    SOCIAL = json.load(f)
 
 ALLOWED_HOSTS = ["*"]
 

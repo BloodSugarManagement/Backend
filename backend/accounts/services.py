@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework.response import Response
 from rest_framework.request import Request
 import requests
+from json import JSONDecodeError
 
 from typing import Union, Dict, Any
 
@@ -56,24 +57,32 @@ def access_token_is_valid(request: Request) -> Union[Dict[str, Any], Response]:
 
 
 def request_access_token_by_auth_code(request, auth):
+    print(f"request: {request}")
+    print(f"auth request: {auth}")
     code = request.GET.get("code")
-    auth["code"] = code  # NOTE: CODE값 추가
 
-    token_req = token_request(auth)
+    print(f"code: {code}")
+    auth["auth"]["code"] = code  # NOTE: CODE값 추가
+
+    print(f"auth after: {auth}")
+    token_req = requests.get(token_request(auth))  # TODO: GET 요청
+
     token_response_json = token_req.json()
 
     error = token_response_json.get("error")
 
     if error is not None:
-        raise JSONDecodeError(error)
+        print(f"error: {error}")
+        raise ValueError(error)
 
     return token_response_json.get('access_token')
 
 
-def token_request(*args, **kwargs):
+def token_request(auth):
+    platform = auth.get("platform")
+    print(f"platform: {platform}")
 
-    platform = kwargs.get("platform")
-    platform_url = {
+    platform_url = {    
         "kakao": "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
                  "{client_id}&redirect_uri={callback_uri}&code={code}",
         "google": "https://oauth2.googleapis.com/token?client_id={client_id}&client_secret="
@@ -83,4 +92,4 @@ def token_request(*args, **kwargs):
                  "{client_id}&client_secret={client_secret}&code={code}&state={state}",
     }
 
-    return platform_url.get(platform).format(**kwargs.get("auth"))
+    return platform_url.get(platform).format(**auth.get("auth"))
