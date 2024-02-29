@@ -101,6 +101,7 @@ class BaseSocialLoginView(APIView):
 
 
 class KakaoLogin(APIView):  # (BaseSocialLoginView)
+    permission_classes = (AllowAny,)
     platform = "kakao"
     token_url = SOCIAL.get("KAKAO_TOKEN_API")
     client_id = SOCIAL.get("KAKAO_CLIENT_ID")
