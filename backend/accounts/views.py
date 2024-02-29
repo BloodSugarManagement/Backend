@@ -1,3 +1,4 @@
+import logging
 import requests
 from typing import Dict, Any, Optional
 
@@ -13,6 +14,9 @@ from rest_framework.request import Request
 from config.settings.base import SOCIAL
 from . import services
 from .models import CustomUser
+
+
+logger = logging.getLogger(__file__)
 
 
 class BaseSocialLoginView(APIView):
@@ -35,19 +39,20 @@ class BaseSocialLoginView(APIView):
 
     @csrf_exempt  # note : if postman testing needs csrftoken
     def get(self, request: Request):
-        print(f"auth: {self.auth}")
+        logger.info("Social login authorization")
         access_token: str = services.request_access_token_by_auth_code(request, self.auth)
+        logger.debug(f"acces_token: {access_token}")
         user_profile_request: Request = self.request_user_profile(access_token)
-        print(f"request: {user_profile_request}")
+        logger.debug(f"request user profile: {user_profile_request}")
         user_profile_response: Dict[str, Any] = services.access_token_is_valid(user_profile_request)
-        print(f"response: {user_profile_response}")
+        logger.debug(f"user profile response: {user_profile_response}")
         user_key, registration_params = self.get_account_user_primary_key(user_profile_response)
+        logger.debug(f"user key:{user_key}\nregister: {registration_params}")
 
-        print(f"user key:{user_key}\nregister: {registration_params}")
         try:
             user: CustomUser = self.user.objects.get(email=user_key)
             social_user: SocialAccount = SocialAccount.objects.get(user=user)
-            print(social_user)
+            logger.debug(f"social user: {social_user}")
 
             if social_user.provider != self.platform:
                 response_message = {"error": "no matching social type"}
