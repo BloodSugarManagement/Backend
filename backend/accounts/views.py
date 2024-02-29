@@ -100,7 +100,7 @@ class BaseSocialLoginView(APIView):
 #         return self.user.objects.get_or_create(email=email)
 
 
-class KakaoLogin:  # (BaseSocialLoginView)
+class KakaoLogin(APIView):  # (BaseSocialLoginView)
     platform = "kakao"
     token_url = SOCIAL.get("KAKAO_TOKEN_API")
     client_id = SOCIAL.get("KAKAO_CLIENT_ID")
