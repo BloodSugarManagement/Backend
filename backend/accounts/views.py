@@ -79,25 +79,25 @@ class BaseSocialLoginView(APIView):
         pass
 
 
-class GoogleLogin(BaseSocialLoginView):
-    platform = "google"
-    token_url = SOCIAL.get("GOOGLE_TOKEN_API")
-    client_id = SOCIAL.get("GOOGLE_CLIENT_ID")
-    client_secret = SOCIAL.get("GOOGLE_CLIENT_SECRET")
-    callback_uri = SOCIAL.get("GOOGLE_CALLBACK_URI")
+# class GoogleLogin(BaseSocialLoginView):
+#     platform = "google"
+#     token_url = SOCIAL.get("GOOGLE_TOKEN_API")
+#     client_id = SOCIAL.get("GOOGLE_CLIENT_ID")
+#     client_secret = SOCIAL.get("GOOGLE_CLIENT_SECRET")
+#     callback_uri = SOCIAL.get("GOOGLE_CALLBACK_URI")
 
-    def post(self, request: Request):
-        return super().post(request)
+#     def post(self, request: Request):
+#         return super().post(request)
 
-    def request_user_profile(self, access_token: str) -> Request:
-        print(f"{self.token_url}?access_token={access_token}")
-        return requests.get(f"{self.token_url}?access_token={access_token}")
+#     def request_user_profile(self, access_token: str) -> Request:
+#         print(f"{self.token_url}?access_token={access_token}")
+#         return requests.get(f"{self.token_url}?access_token={access_token}")
 
-    def get_account_user_primary_key(self, user_info_response: Dict[str, Any]):
-        return user_info_response.get("email"), user_info_response.get("user_id")
+#     def get_account_user_primary_key(self, user_info_response: Dict[str, Any]):
+#         return user_info_response.get("email"), user_info_response.get("user_id")
 
-    def simple_registration(self, email):
-        return self.user.objects.get_or_create(email=email)
+#     def simple_registration(self, email):
+#         return self.user.objects.get_or_create(email=email)
 
 
 class KakaoLogin(BaseSocialLoginView):
@@ -117,23 +117,23 @@ class KakaoLogin(BaseSocialLoginView):
         return self.user.objects.get_or_create(email=uid)
 
 
-class NaverLogin(BaseSocialLoginView):
-    platform = "naver"
-    token_url = SOCIAL.get("NAVER_TOKEN_API")
-    client_id = SOCIAL.get("NAVER_CLIENT_ID")
-    client_secret = SOCIAL.get("NAVER_CLIENT_SECRET")
-    callback_uri = SOCIAL.get("NAVER_CALLBACK_URI")
+# class NaverLogin(BaseSocialLoginView):
+#     platform = "naver"
+#     token_url = SOCIAL.get("NAVER_TOKEN_API")
+#     client_id = SOCIAL.get("NAVER_CLIENT_ID")
+#     client_secret = SOCIAL.get("NAVER_CLIENT_SECRET")
+#     callback_uri = SOCIAL.get("NAVER_CALLBACK_URI")
 
-    def post(self, request):
-        return super().post(request)
+#     def post(self, request):
+#         return super().post(request)
 
-    def request_user_profile(self, access_token):
-        headers = {"Authorization": f"Bearer {access_token}"}
-        return requests.post(self.token_url, headers=headers)
+#     def request_user_profile(self, access_token):
+#         headers = {"Authorization": f"Bearer {access_token}"}
+#         return requests.post(self.token_url, headers=headers)
 
-    def get_account_user_primary_key(self, user_info_response: Dict[str, Any]):
-        response = user_info_response.get("response")
-        return response.get("email"), response.get("id")
+#     def get_account_user_primary_key(self, user_info_response: Dict[str, Any]):
+#         response = user_info_response.get("response")
+#         return response.get("email"), response.get("id")
 
-    def simple_registration(self, email):
-        return self.user.objects.get_or_create(email=email)
+#     def simple_registration(self, email):
+#         return self.user.objects.get_or_create(email=email)
