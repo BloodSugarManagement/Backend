@@ -112,7 +112,7 @@ class KakaoLogin(APIView):  # (BaseSocialLoginView)
         auth_fields = ["client_id", "client_secret", "callback_uri", "state"]
         return {
             "platform": self.platform,
-            "auth": {auth_field:  getattr(self, auth_field) for auth_field in auth_fields if getattr(self, auth_field)}
+            "auth": {auth_field:  getattr(self, auth_field, None) for auth_field in auth_fields if getattr(self, auth_field)}
         }
 
     @csrf_exempt  # note : if postman testing needs csrftoken
