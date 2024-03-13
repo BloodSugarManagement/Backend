@@ -124,6 +124,7 @@ class NaverLogin(BaseSocialLoginView):
     token_url = SOCIAL.get("NAVER_TOKEN_API")
     client_id = SOCIAL.get("NAVER_CLIENT_ID")
     client_secret = SOCIAL.get("NAVER_CLIENT_SECRET")
+    callback_uri = SOCIAL.get("NAVER_CALLBACK_URI")
 
     def post(self, request):
         return super().post(request)
