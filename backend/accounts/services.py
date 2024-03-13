@@ -51,8 +51,9 @@ def request_access_token_by_auth_code(request, auth):
 
     auth["auth"]["code"] = code  # NOTE: CODE값 추가
 
-    logger.debug(f"token request auth: {token_request(auth)}")
-    token_req = requests.get(token_request(auth))  # TODO: GET 요청
+    logger.info("[REQUEST - GET] request for take access token by auth code")
+    token_req = token_request(auth)
+    logger.debug(f"token request auth: {token_req}")
 
     token_response_json = token_req.json()
 
@@ -62,14 +63,12 @@ def request_access_token_by_auth_code(request, auth):
         logger.error(f"error: {error}")
         raise ValueError(error)
 
-    logger.debug(f"token request access token: {token_response_json.get('access_token')}")
-
     return token_response_json.get('access_token')
 
 
 def token_request(auth):
     platform = auth.get("platform")
-    print(f"platform: {platform}")
+    logger.debug(f"token request auth: {auth}")
 
     platform_url = {
         "kakao": "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
@@ -80,5 +79,10 @@ def token_request(auth):
         "naver": "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id="
                  "{client_id}&client_secret={client_secret}&code={code}&state={state}",
     }
+    token_request_call_options = platform_url.get(platform).format(**auth.get("auth"))
+    logger.debug(f"call option: {token_request_call_options}")
 
-    return platform_url.get(platform).format(**auth.get("auth"))
+    if platform == "google":
+        return requests.post(token_request_call_options)
+    else:
+        return requests.get(token_request_call_options)

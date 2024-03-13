@@ -13,6 +13,9 @@ show-logs:
 show-logs-api:
 	docker compose -f local.yml logs api
 
+tail-logs:
+	docker compose -f local.yml logs api -f
+
 makemigrations:
 	docker compose -f local.yml run --rm api python backend/manage.py makemigrations
 
@@ -27,3 +30,7 @@ superuser:
 
 down-v:
 	docker compose -f local.yml down -v
+
+rebuild:
+	docker compose -f local.yml down && docker compose -f local.yml up --build -d --remove-orphans
+
